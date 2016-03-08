@@ -10,35 +10,40 @@ import java.util.*;
 
 public class Graph {
 
-	static final int infinity = Integer.MAX_VALUE;
-	static int t, nodes, edges;
-	static double[] distance;
-	static List<Edge>[] list;
-	static Scanner in = new Scanner(System.in);
-
+	 final int infinity = Integer.MAX_VALUE;
+	 int t, nodes, edges,startNode;
+	 double[] distance;
+	 List<Edge>[] list;
+	 Scanner in = new Scanner(System.in);
+      
 
 	public static void main(String[] args) {
-		String name = "tinyEWD.txt";
-		System.out.print("Enter the name of file:  ");
+		//Graph G = new Graph("tinyEWD.txt",0);
+		Graph G = new Graph("erezTest",1);
+		;
+		System.out.println("need to be true  " + (G.MinDistanceTwoNode(5)==20) );
+		System.out.println("need to be true  " + (G.MinDistanceTwoNode(6)==11) );
+	}
 
-		createGraph(name);
-		findShortestPaths(0);
+	public Graph(String name_file,int start){
+		createGraph(name_file);
+		this.startNode = start;
+		findShortestPaths(startNode);
 		System.out.println("The shortest path to all nodes from node 0 is : ");
 		for (int i = 0; i < nodes; i++) {
 			System.out.println(i + " : " + distance[i]);
 		}
-
 	}
-
-	static void createGraph(String Graph_name_file) {
+	private void createGraph(String Graph_name_file) {
 		String s = "";
-		list = new ArrayList[nodes];
+		
 		FileReader in;
 		try {
 			in = new FileReader(Graph_name_file);
 			BufferedReader bf = new BufferedReader(in);
 			s = bf.readLine();
 			nodes = Integer.valueOf(s);
+			list = new ArrayList[nodes];
 			s = bf.readLine();
 			edges = Integer.valueOf(s);
 
@@ -65,15 +70,14 @@ public class Graph {
 					try {
 						throw new Exception("you hava a nember less then zreo! Error!!");
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 
-				from = Integer.valueOf(x) - 1;
-				to = Integer.valueOf(y) - 1;
+				from = Integer.valueOf(x);
+				to = Integer.valueOf(y) ;
 				weight = temp;
-				System.out.println(from);
+				
 				if (list[from] == null) {
 					list[from] = new ArrayList<>();
 				}
@@ -90,18 +94,20 @@ public class Graph {
 			e.printStackTrace();
 		}
 	}
-
-	static void findShortestPaths(int node) {
-		distance = new double[nodes];
+public double MinDistanceTwoNode(int end){
+	return distance[end];
+}
+	private void findShortestPaths( int start) {
+		this.distance = new double[nodes];
 
 		for (int i = 0; i < nodes; i++) {
 			distance[i] = infinity;
 		}
 
-		distance[node] = 0;
+		distance[start] = 0;
 
 		PriorityQueue<Node> priorityQueue = new PriorityQueue<>();
-		priorityQueue.add(new Node(node, 0, -1));
+		priorityQueue.add(new Node(start, 0, -1));
 
 		while (priorityQueue.size() > 0) {
 			Node min = priorityQueue.poll();
