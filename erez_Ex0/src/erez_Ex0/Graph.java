@@ -10,19 +10,19 @@ import java.util.*;
 
 public class Graph {
 
-	 final int infinity = Integer.MAX_VALUE;
-	 int t, nodes, edges,startNode;
-	 double[] distance;
-	 List<Edge>[] list;
-	 Scanner in = new Scanner(System.in);
-      
+	final int infinity = Integer.MAX_VALUE;
+	int t, nodes, edges,startNode;
+	double[] distance;
+	List<Edge>[] list;
+	List<Edge>[] back;
+	Scanner in = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		//Graph G = new Graph("tinyEWD.txt",0);
-		Graph G = new Graph("erezTest",1);
-		;
-		System.out.println("need to be true  " + (G.MinDistanceTwoNode(5)==20) );
-		System.out.println("need to be true  " + (G.MinDistanceTwoNode(6)==11) );
+		Graph G = new Graph("tinyEWG.txt",4);
+	//	Graph G = new Graph("erezTest",4);
+		System.out.println(G.getPath(7));
+		//Graph_algo g = new Graph_algo();
+	//	System.out.println(g.MinDistNodes("erezTest", 0, 5));
 	}
 
 	public Graph(String name_file,int start){
@@ -36,7 +36,7 @@ public class Graph {
 	}
 	private void createGraph(String Graph_name_file) {
 		String s = "";
-		
+
 		FileReader in;
 		try {
 			in = new FileReader(Graph_name_file);
@@ -44,6 +44,7 @@ public class Graph {
 			s = bf.readLine();
 			nodes = Integer.valueOf(s);
 			list = new ArrayList[nodes];
+			back = new ArrayList[nodes];
 			s = bf.readLine();
 			edges = Integer.valueOf(s);
 
@@ -77,26 +78,62 @@ public class Graph {
 				from = Integer.valueOf(x);
 				to = Integer.valueOf(y) ;
 				weight = temp;
-				
+
 				if (list[from] == null) {
-					list[from] = new ArrayList<>();
+					list[from] = new ArrayList<Edge>();
 				}
 
 				list[from].add(new Edge(to, weight));
-
-				if (list[to] == null) {
-					list[to] = new ArrayList<>();
+				
+			
+				if (back[to] == null) {
+					back[to] = new ArrayList<Edge>();
 				}
 
-				list[to].add(new Edge(from, weight));
+				back[to].add(new Edge(from, weight));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-public double MinDistanceTwoNode(int end){
-	return distance[end];
-}
+	//	public static void printPath (WeightedGraph G, int [] pred, int s, int e) {
+	//		       final java.util.ArrayList path = new java.util.ArrayList();
+	//		       int x = e;
+	//		       while (x!=s) {
+	//		         path.add (0, G.getLabel(x));
+	//		          x = pred[x];
+	//		       }
+	//		        path.add (0, G.getLabel(s));
+	//		       System.out.println (path);
+	//		    }
+
+	public double MinDistanceTwoNode(int end){
+		return distance[end];
+	}
+	public String getPath(int end){
+		int start=end;
+		String s="";
+		s=s+end;
+		Iterator<Edge> iterator ;
+		
+		while (start!=startNode){
+			iterator = back[start].iterator();
+			boolean b=true;
+			while (iterator.hasNext()&&b) {
+				Edge curr = iterator.next();
+				
+				if (Math.abs((this.distance[start]-curr.weight)-(this.distance[curr.to]))<0.00001)
+				{
+					start=curr.to;
+					s=curr.to+"->"+s;
+					b=false;
+				}
+			}	
+		}
+		return s;
+	}
+
+
 	private void findShortestPaths( int start) {
 		this.distance = new double[nodes];
 
@@ -125,13 +162,18 @@ public double MinDistanceTwoNode(int end){
 		}
 	}
 
-	static class Edge {
+	static class Edge implements Comparable<Edge> {
 		int to;
 		double weight;
 
 		public Edge(int to, double weight) {
 			this.to = to;
 			this.weight = weight;
+		}
+
+		@Override
+		public int compareTo(Edge a) {
+	      return Double.compare(this.weight,a.weight );
 		}
 	}
 
