@@ -1,42 +1,66 @@
-package erez_Ex0;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
 
-
+import javax.swing.plaf.synth.SynthStyle;
 
 public class Graph {
 
-	final int infinity = Integer.MAX_VALUE;
-	int t, nodes, edges,startNode;
+	int infinity = Integer.MAX_VALUE;
+	int t, nodes, edges,startNode,n;
 	double[] distance;
 	List<Edge>[] list;
 	List<Edge>[] back;
-	Scanner in = new Scanner(System.in);
-
+	double [] BL;
+	//הפונקציות של המטלה עפ סדר הן
+	//////////////////////////////////////////////////////////////////////////////////////////
+	public static double MinPrice(String nameGraph,int start,int end){
+		Graph g = new Graph(nameGraph, start);
+		g.findShortestPaths(start);
+		return g.MinDistanceTwoNode(end);
+	}
+	public static String GetPath(String nameGraph,int start,int end){
+		Graph g = new Graph(nameGraph, start);
+		g.findShortestPaths(start);
+		return g.getPath(end);
+	}
+	public static double[] GetMinPriceWithBL(String nameGraph,String BL,int start,int end){
+		Graph g = new Graph(nameGraph, start);
+		g.BL(BL, nameGraph);
+		return g.GETBL();
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////
 	public static void main(String[] args) {
-		Graph G = new Graph("tinyEWG.txt",4);
-	//	Graph G = new Graph("erezTest",4);
-		System.out.println(G.getPath(7));
-		//Graph_algo g = new Graph_algo();
-	//	System.out.println(g.MinDistNodes("erezTest", 0, 5));
+		String name_file = "tinyEWD.txt";
+		String name_file_BL = "BL.txt";
+		int start = 0;
+		int end = 2;
+
+		System.out.println(MinPrice(name_file,start,end));
+		System.out.println(GetPath(name_file,start,end));
+		System.out.println(Arrays.toString(GetMinPriceWithBL(name_file,name_file_BL,start,end)));
 	}
 
+
+	///////////////////////////////////////////////////////////////////////////////////
+	//בנאי מקבל את שם הקובץ של הגרף ונק התחלה
 	public Graph(String name_file,int start){
-		createGraph(name_file);
+		createGraph(name_file,start);
 		this.startNode = start;
-		findShortestPaths(startNode);
-		System.out.println("The shortest path to all nodes from node 0 is : ");
-		for (int i = 0; i < nodes; i++) {
-			System.out.println(i + " : " + distance[i]);
-		}
+		//findShortestPaths();
+		//		System.out.println("The shortest path to all nodes from node 0 is : ");
+		//		for (int i = 0; i < nodes; i++) {
+		//			System.out.println(i + " : " + distance[i]);
+		//		}
 	}
-	private void createGraph(String Graph_name_file) {
-		String s = "";
 
+	//יוצר את הגרף מקבל את שם הגרף ונק התחלה
+	private void createGraph(String Graph_name_file,int start) {
+		String s = "";
+		int from=0, to=0;
+		double weight=0;
 		FileReader in;
 		try {
 			in = new FileReader(Graph_name_file);
@@ -50,22 +74,15 @@ public class Graph {
 
 			for (int i = 0; i < edges; i++) {
 				s = bf.readLine();
-				int from, to;
-				double weight;
+				from=0; to=0; weight=0;
+
 				String x = "", y = "", w = "";
-				int a = 0, b = 0;
-				for (int p = 0; p < s.length(); p++) {
-					if (s.charAt(p) == ' ' && x.equalsIgnoreCase("")) {
-						x = s.substring(0, p);
-						a = p + 1;
-					} else if (s.charAt(p) == ' ' && a != 0) {
-						y = s.substring(a, p);
-						b = p + 1;
-					} else if (a != 0 && b != 0) {
-						w = s.substring(b, s.length());
-						break;
-					}
-				}
+				int a = 0, b = 0, k=0;
+				StringTokenizer st = new StringTokenizer(s);
+				x = st.nextToken();
+				y = st.nextToken();
+				w = st.nextToken();
+
 				double temp = Double.valueOf(w);
 				if (temp < 0) {
 					try {
@@ -84,8 +101,8 @@ public class Graph {
 				}
 
 				list[from].add(new Edge(to, weight));
-				
-			
+
+
 				if (back[to] == null) {
 					back[to] = new ArrayList<Edge>();
 				}
@@ -93,35 +110,81 @@ public class Graph {
 				back[to].add(new Edge(from, weight));
 			}
 		} catch (Exception e) {
+			System.err.println("!!!!!!!!!!!!" + from);
 			e.printStackTrace();
 		}
-	}
-	//	public static void printPath (WeightedGraph G, int [] pred, int s, int e) {
-	//		       final java.util.ArrayList path = new java.util.ArrayList();
-	//		       int x = e;
-	//		       while (x!=s) {
-	//		         path.add (0, G.getLabel(x));
-	//		          x = pred[x];
-	//		       }
-	//		        path.add (0, G.getLabel(s));
-	//		       System.out.println (path);
-	//		    }
+		this.distance = new double[nodes];
+		this.startNode = start;
+		for (int i = 0; i < nodes; i++) {
+			distance[i] = infinity;
+		}
 
+		distance[start] = 0;
+	}
+	//רשימה שחורה מקבל את שם הקובץ המקורי ושם קובץ שחור לעידכון
+	public void BL(String name_file_BL,String nameMainFail){
+		FileReader in;
+		String s = "",t="";
+		Graph g = null;
+		try {
+			in = new FileReader(name_file_BL);
+			BufferedReader bf = new BufferedReader(in);
+			s = bf.readLine();
+			this.n = Integer.valueOf(s);
+			BL = new double[n];
+			for(int i=0;i<BL.length;i++){
+				s = bf.readLine();
+				String x = "", y = "", k = "";
+				int from = 0, to = 0, nemberBL = 0;
+				StringTokenizer st = new StringTokenizer(s);
+				x = st.nextToken();
+				y = st.nextToken();
+				k = st.nextToken();
+				from = Integer.valueOf(x);
+				to = Integer.valueOf(y) ;
+				nemberBL = Integer.valueOf(k);
+
+
+				g = new Graph(nameMainFail, from);
+				for(int j=0;j<nemberBL;j++){
+					t = st.nextToken();
+					int index = Integer.valueOf(t);
+					int size = g.list[index].size();
+
+					if(size>0){
+						for(int a =0;a<size;a++){
+							g.list[index].get(a).setWeight(99999);
+						}
+					}
+				}
+
+				g.findShortestPaths2(from);
+				BL[i]=g.distance[to];
+
+			}
+		}
+		catch(Exception e ){}
+
+	}
+	public double [] GETBL(){
+		return BL;
+	}
 	public double MinDistanceTwoNode(int end){
 		return distance[end];
 	}
+	//מחזיר את המסלול הקצר ביותר לנק הסיום
 	public String getPath(int end){
 		int start=end;
 		String s="";
 		s=s+end;
 		Iterator<Edge> iterator ;
-		
+
 		while (start!=startNode){
 			iterator = back[start].iterator();
 			boolean b=true;
 			while (iterator.hasNext()&&b) {
 				Edge curr = iterator.next();
-				
+
 				if (Math.abs((this.distance[start]-curr.weight)-(this.distance[curr.to]))<0.00001)
 				{
 					start=curr.to;
@@ -133,8 +196,8 @@ public class Graph {
 		return s;
 	}
 
-
-	private void findShortestPaths( int start) {
+	//אלגוריתם של דיקסטרה מציאת המסלול הקצר ביותר בגרף
+	private void findShortestPaths(int start) {
 		this.distance = new double[nodes];
 
 		for (int i = 0; i < nodes; i++) {
@@ -147,21 +210,50 @@ public class Graph {
 		priorityQueue.add(new Node(start, 0, -1));
 
 		while (priorityQueue.size() > 0) {
+
 			Node min = priorityQueue.poll();
-			Iterator<Edge> iterator = list[min.node].iterator();
+			if ( list[min.node]!=null){
+				Iterator<Edge> iterator = list[min.node].iterator();
 
-			while (iterator.hasNext()) {
-				Edge curr = iterator.next();
+				while (iterator.hasNext()) {
+					Edge curr = iterator.next();
 
-				if (distance[min.node] + curr.weight < distance[curr.to]) {
-					distance[curr.to] = distance[min.node] + curr.weight;
-					priorityQueue.add(new Node(curr.to, distance[curr.to], min.node));
+					if (distance[min.node] + curr.weight < distance[curr.to]) {
+						distance[curr.to] = distance[min.node] + curr.weight;
+						priorityQueue.add(new Node(curr.to, distance[curr.to], min.node));
 
+					}
+				}
+			}
+		}
+	}
+	//פונקציה שמיועדת לרשימה השחורה, אחרי עידכון עליית המחירים בצלעות המבוקשות נפעיל שוב את האלגוריתם עם שינויים קלים
+	private void findShortestPaths2(int start) {
+
+
+		PriorityQueue<Node> priorityQueue = new PriorityQueue<>();
+		priorityQueue.add(new Node(start, 0, -1));
+
+		while (priorityQueue.size() > 0) {
+
+			Node min = priorityQueue.poll();
+			if ( list[min.node]!=null){
+				Iterator<Edge> iterator = list[min.node].iterator();
+
+				while (iterator.hasNext()) {
+					Edge curr = iterator.next();
+
+					if (distance[min.node] + curr.weight < distance[curr.to]) {
+						distance[curr.to] = distance[min.node] + curr.weight;
+						priorityQueue.add(new Node(curr.to, distance[curr.to], min.node));
+
+					}
 				}
 			}
 		}
 	}
 
+	//צלע בדרף לכל צלע יש משקל ויעד
 	static class Edge implements Comparable<Edge> {
 		int to;
 		double weight;
@@ -171,12 +263,33 @@ public class Graph {
 			this.weight = weight;
 		}
 
+		public Edge(Edge e){
+			this.to = e.to;
+			this.weight = e.weight;
+		} 
+
+		public int getTo() {
+			return to;
+		}
+
+		public void setTo(int to) {
+			this.to = to;
+		}
+
+		public double getWeight() {
+			return weight;
+		}
+
+		public void setWeight(double weight) {
+			this.weight = weight;
+		}
+
 		@Override
 		public int compareTo(Edge a) {
-	      return Double.compare(this.weight,a.weight );
+			return Double.compare(this.weight,a.weight );
 		}
 	}
-
+	//קודקוד בגרף
 	static class Node implements Comparable<Node> {
 
 		int node;
@@ -187,6 +300,11 @@ public class Graph {
 			this.shortestPathWeight = shortestPathWeight;
 			this.parent = parent;
 		}
+		public Node(Node n) {
+			this.node = n.node;
+			this.shortestPathWeight = n.shortestPathWeight;
+			this.parent = n.parent;
+		}
 
 		@Override
 		public int compareTo(Node o) {
@@ -196,5 +314,3 @@ public class Graph {
 	}
 
 }
-
-
