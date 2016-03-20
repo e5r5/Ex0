@@ -26,21 +26,21 @@ public class Graph {
 		g.findShortestPaths(start);
 		return g.getPath(end);
 	}
-	public static double[] GetMinPriceWithBL(String nameGraph,String BL,int start,int end){
+	public static double[] GetMinPriceWithBL(String nameGraph,String BL,int start){
 		Graph g = new Graph(nameGraph, start);
 		g.BL(BL, nameGraph);
 		return g.GETBL();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
 	public static void main(String[] args) {
-		String name_file = "tinyEWD.txt";
+		String name_file = "tinyEWG.txt";
 		String name_file_BL = "BL.txt";
 		int start = 0;
-		int end = 2;
+		int end = 6;
 
 		System.out.println(MinPrice(name_file,start,end));
 		System.out.println(GetPath(name_file,start,end));
-		System.out.println(Arrays.toString(GetMinPriceWithBL(name_file,name_file_BL,start,end)));
+		System.out.println(Arrays.toString(GetMinPriceWithBL(name_file,name_file_BL,start)));
 	}
 
 
