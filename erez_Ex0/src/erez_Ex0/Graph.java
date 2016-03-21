@@ -1,10 +1,19 @@
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
-import javax.swing.plaf.synth.SynthStyle;
+import javax.crypto.CipherInputStream;
 
 public class Graph {
 
@@ -14,8 +23,25 @@ public class Graph {
 	List<Edge>[] list;
 	List<Edge>[] back;
 	double [] BL;
+
+	///////////////////////////////////////////////////////////////////////////////////////////
+	public static void main(String[] args) {
+		String name_file = "tinyEWD.txt";
+		String name_file_BL = "BL.txt";
+		int start = 3;
+		int end = 1;
+
+		System.out.println(MinPrice(name_file,start,end));
+		System.out.println(GetPath(name_file,start,end));
+		System.out.println(Arrays.toString(GetMinPriceWithBL(name_file,name_file_BL,start)));
+	}
+
+
+	///////////////////////////////////////////////////////////////////////////////////
+
 	//הפונקציות של המטלה עפ סדר הן
 	//////////////////////////////////////////////////////////////////////////////////////////
+	//static Fanction
 	public static double MinPrice(String nameGraph,int start,int end){
 		Graph g = new Graph(nameGraph, start);
 		g.findShortestPaths(start);
@@ -31,29 +57,76 @@ public class Graph {
 		g.BL(BL, nameGraph);
 		return g.GETBL();
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////
-	public static void main(String[] args) {
-		String name_file = "tinyEWG.txt";
-		String name_file_BL = "BL.txt";
-		int start = 0;
-		int end = 6;
+	public static boolean is_eqFile(String name1,String name2){
+		FileReader f1;
+		FileReader f2;
+		try {
+			f1 = new FileReader(name1);
+			f2 = new FileReader(name2);
 
-		System.out.println(MinPrice(name_file,start,end));
-		System.out.println(GetPath(name_file,start,end));
-		System.out.println(Arrays.toString(GetMinPriceWithBL(name_file,name_file_BL,start)));
+
+			BufferedReader bf1 = new BufferedReader(f1);
+			BufferedReader bf2 = new BufferedReader(f2);
+			String s1 = "";
+			String s2 = "";
+			while(s1!=null || s2!=null){
+
+				if(!s1.equalsIgnoreCase(s2)) return false;
+				s1 = bf1.readLine();
+				s2 = bf2.readLine();
+			}
+			if((s1==null&& s2!=null) || (s1!=null&& s2==null)) return false;
+			else return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+
+		}
+
 	}
+	public static void printToFile(String BLname,double [] arr){
+		FileReader f;
+		File fww ;
+		String a =   " AnsTo"+BLname;
+		try {
+			f = new FileReader(BLname);
+			BufferedReader bf = new BufferedReader(f);
+			fww= new File(a);
+			fww.createNewFile();
+			FileWriter fw = new FileWriter(fww);
+			String s = "";
+			int i=0;
+			s = bf.readLine();
+			fw.write(s + "\n");
+			s = bf.readLine();
+			while(s!=null){
+				if(arr[i]==Integer.MAX_VALUE){
+					fw.write(s +"  " + "inf = no path!\n");
+					i++;
+					//continue;
+				}
+				else{
+					fw.write(s + "  " + arr[i++] +"\n");	
+				}
+				s = bf.readLine();
+			}
+			bf.close();
+			f.close();
+			fw.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 
-	///////////////////////////////////////////////////////////////////////////////////
+	}
+	//end static Fanction
+
 	//בנאי מקבל את שם הקובץ של הגרף ונק התחלה
 	public Graph(String name_file,int start){
 		createGraph(name_file,start);
 		this.startNode = start;
-		//findShortestPaths();
-		//		System.out.println("The shortest path to all nodes from node 0 is : ");
-		//		for (int i = 0; i < nodes; i++) {
-		//			System.out.println(i + " : " + distance[i]);
-		//		}
+
 	}
 
 	//יוצר את הגרף מקבל את שם הגרף ונק התחלה
@@ -109,6 +182,7 @@ public class Graph {
 
 				back[to].add(new Edge(from, weight));
 			}
+			in.close();
 		} catch (Exception e) {
 			System.err.println("!!!!!!!!!!!!" + from);
 			e.printStackTrace();
@@ -120,6 +194,7 @@ public class Graph {
 		}
 
 		distance[start] = 0;
+
 	}
 	//רשימה שחורה מקבל את שם הקובץ המקורי ושם קובץ שחור לעידכון
 	public void BL(String name_file_BL,String nameMainFail){
@@ -162,18 +237,25 @@ public class Graph {
 				BL[i]=g.distance[to];
 
 			}
+			in.close();
 		}
+
 		catch(Exception e ){}
 
+		printToFile(name_file_BL,BL);
 	}
+
 	public double [] GETBL(){
 		return BL;
 	}
 	public double MinDistanceTwoNode(int end){
 		return distance[end];
 	}
+
 	//מחזיר את המסלול הקצר ביותר לנק הסיום
 	public String getPath(int end){
+		if(distance[end]==Integer.MAX_VALUE)
+			return "inf = no path!";
 		int start=end;
 		String s="";
 		s=s+end;
