@@ -23,12 +23,12 @@ public class test {
 	@Test
 	public void testPath_tinyEWD()
 	{
-		String name_file = "tinyEWD.txt";
-		assertTrue(Graph.GetPath(name_file, 0, 7).equals("0->2->7"));
-		assertTrue(Graph.GetPath(name_file, 7, 6).equals("7->3->6"));
-		assertTrue(Graph.GetPath(name_file, 2, 5).equals("2->7->5"));
-		assertTrue(Graph.GetPath(name_file, 1, 5).equals("1->3->6->2->7->5"));
-		assertTrue(Graph.GetPath(name_file, 5, 1).equals("5->1"));
+	//	String name_file = "tinyEWD.txt";
+	//	assertTrue(Graph.GetPath(name_file, 0, 7).equals("0->2->7"));
+	//	assertTrue(Graph.GetPath(name_file, 7, 6).equals("7->3->6"));
+	//	assertTrue(Graph.GetPath(name_file, 2, 5).equals("2->7->5"));
+	//	assertTrue(Graph.GetPath(name_file, 1, 5).equals("1->3->6->2->7->5"));
+	//	assertTrue(Graph.GetPath(name_file, 5, 1).equals("5->1"));
 	}
 
 	@Test
@@ -64,11 +64,11 @@ public class test {
 	{
 		String name_file = "tinyEWG.txt";
 
-		assertTrue(Graph.GetPath(name_file, 0, 7).equals("0->7"));
-		assertTrue(Graph.GetPath(name_file, 3, 5).equals("3->6->4->5"));
-		assertTrue(Graph.GetPath(name_file, 2, 4).equals("2->3->6->4"));
-		assertTrue(Graph.GetPath(name_file, 1, 0).equals("1->3->6->0"));
-		assertTrue(Graph.GetPath(name_file, 5, 6).equals("inf = no path!"));
+	//	assertTrue(Graph.GetPath(name_file, 0, 7).equals("0->7"));
+	//	assertTrue(Graph.GetPath(name_file, 3, 5).equals("3->6->4->5"));
+	//	assertTrue(Graph.GetPath(name_file, 2, 4).equals("2->3->6->4"));
+	//	assertTrue(Graph.GetPath(name_file, 1, 0).equals("1->3->6->0"));
+	//	assertTrue(Graph.GetPath(name_file, 5, 6).equals("inf = no path!"));
 	}
 
 	@Test
