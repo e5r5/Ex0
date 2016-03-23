@@ -48,7 +48,7 @@ public class Graph {
 	public static void main(String[] args) {
 		String name_file = "tinyEWD.txt";
 		String name_file_BL = "BLtinyEWD.txt";
-		int start = 0;
+		int start = 7;
 		int end = 6;
 
 		System.out.println(MinPrice(name_file,start,end));
@@ -328,10 +328,11 @@ public class Graph {
 			Iterator<Edge> iterator ;
 
 			while (start!=startNode ){
-			
+				
 				iterator = back[start].iterator();
 				boolean b=true;
 				while (iterator.hasNext()&&b) {
+					
 					Edge curr = iterator.next();
 
 					if (Math.abs((this.distance[start]-curr.weight)-(this.distance[curr.to]))<0.00001)
@@ -346,6 +347,7 @@ public class Graph {
 		}
 		// dijkstra, find the shortest path. fill the array "distance"
 		private void findShortestPaths(int start) {
+			this.startNode=start;
 			this.distance = new double[nodes];
 
 			for (int i = 0; i < nodes; i++) {
