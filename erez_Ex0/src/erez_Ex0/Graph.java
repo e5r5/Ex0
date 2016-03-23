@@ -1,4 +1,3 @@
-package ex1graph;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,6 +44,19 @@ public class Graph {
 //			System.out.println("Done!!!  Total time: " + (s2 - start) + "  ms");
 //		}
 //	}
+	
+	public static void main(String[] args) {
+		String name_file = "tinyEWD.txt";
+		String name_file_BL = "BLtinyEWD.txt";
+		int start = 0;
+		int end = 6;
+
+		System.out.println(MinPrice(name_file,start,end));
+		System.out.println(GetPath(name_file,start,end));
+		System.out.println(Arrays.toString(GetMinPriceWithBL(name_file,name_file_BL)));
+	}
+
+
 
 	/**
 	* This function calculates the minimum distance between vertex "start" to vertex "end"
@@ -257,8 +269,8 @@ public class Graph {
 					ArrayList<Double> beforUp = new ArrayList<Double>();
 					for(int j=0;j<nemberBL;j++){
 						t = st.nextToken();
-						int index = Integer.valueOf(t);//ä÷åã÷åã äùçåø
-						int size = list[index].size();//ëîä ÷åã÷åãéí öìòåú éù ì÷åã÷åã äùçåø
+						int index = Integer.valueOf(t);//Ã¤Ã·Ã¥Ã£Ã·Ã¥Ã£ Ã¤Ã¹Ã§Ã¥Ã¸
+						int size = list[index].size();//Ã«Ã®Ã¤ Ã·Ã¥Ã£Ã·Ã¥Ã£Ã©Ã­ Ã¶Ã¬Ã²Ã¥Ãº Ã©Ã¹ Ã¬Ã·Ã¥Ã£Ã·Ã¥Ã£ Ã¤Ã¹Ã§Ã¥Ã¸
 
 						if(size>0){
 							for(int a =0;a<size;a++){
@@ -279,8 +291,8 @@ public class Graph {
 					stm.nextToken();
 					for(int j=0;j<nemberBL;j++){
 						t = stm.nextToken();
-						int index = Integer.valueOf(t);//ä÷åã÷åã äùçåø
-						int size = list[index].size();//ëîä ÷åã÷åãéí öìòåú éù ì÷åã÷åã äùçåø
+						int index = Integer.valueOf(t);//Ã¤Ã·Ã¥Ã£Ã·Ã¥Ã£ Ã¤Ã¹Ã§Ã¥Ã¸
+						int size = list[index].size();//Ã«Ã®Ã¤ Ã·Ã¥Ã£Ã·Ã¥Ã£Ã©Ã­ Ã¶Ã¬Ã²Ã¥Ãº Ã©Ã¹ Ã¬Ã·Ã¥Ã£Ã·Ã¥Ã£ Ã¤Ã¹Ã§Ã¥Ã¸
 
 						if(size>0){
 							for(int a =0;a<size;a++){
@@ -315,7 +327,7 @@ public class Graph {
 			s=s+end;
 			Iterator<Edge> iterator ;
 
-			while (start!=end ){
+			while (start!=startNode ){
 			
 				iterator = back[start].iterator();
 				boolean b=true;
