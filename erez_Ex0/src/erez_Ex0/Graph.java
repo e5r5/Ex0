@@ -26,7 +26,7 @@ public class Graph {
 	List<Edge>[] list;
 	List<Edge>[] back;
 	double [] BL;
-
+////shirly is Beautiful!!!
 	///////////////////////////////////////////////////////////////////////////////////////////
 //	public static void main(String[] args) {
 //		
@@ -46,21 +46,38 @@ public class Graph {
 //		}
 //	}
 
-		///////////////////////////////////////////////////////////////////////////////////
-
-		//הפונקציות של המטלה עפ סדר הן
-		//////////////////////////////////////////////////////////////////////////////////////////
-		//static Fanction
+	/**
+	* This function calculates the minimum distance between vertex "start" to vertex "end"
+	* @param nameGraph the name of the file
+	* @param start the start vertex
+	* @param end the end vertex
+	* @return the distance between tow vertex
+	*/
 		public static double MinPrice(String nameGraph,int start,int end){
 			Graph g = new Graph(nameGraph);
 			g.findShortestPaths(start);
 			return g.MinDistanceTwoNode(end);
 		}
+		/**
+		* This function calculates the path between tow vertex
+		* @param nameGraph the name of the file
+		* @param start the start vertex
+		* @param end the end vertex
+		* @return string of the path
+		*/
 		public static String GetPath(String nameGraph,int start,int end){
 			Graph g = new Graph(nameGraph);
 			g.findShortestPaths(start);
 			return g.getPath(start,end);
 		}
+
+		/**
+		* This function calculates the minimum distance between vertex "start" to vertex "end" without pass between some vertax
+		* @param nameGraph the name of the file of the graph
+		* @param BL the name of the file of the black list
+		* @param start the start vertex
+		* @return the distance between tow vertex
+		*/
 		public static double[] GetMinPriceWithBL(String nameGraph,String BL){
 			Graph g = new Graph(nameGraph);
 			g.BL(BL);
@@ -132,14 +149,16 @@ public class Graph {
 		}
 		//end static Fanction
 
-		//בנאי מקבל את שם הקובץ של הגרף ונק התחלה
+
+		///////////////////////////////////////////////////////////////////////////////////
+		//constructor of the graph, get the name of the file and a start vertex
 		public Graph(String name_file){
 			createGraph(name_file);
 			//this.startNode = start;
 
 		}
 
-		//יוצר את הגרף מקבל את שם הגרף ונק התחלה
+		//create the graph, get name of the file and a start vertex
 		private void createGraph(String Graph_name_file) {
 			String s = "";
 			int from=0, to=0;
@@ -204,7 +223,7 @@ public class Graph {
 			//distance[start] = 0;
 
 		}
-		//רשימה שחורה מקבל את שם הקובץ המקורי ושם קובץ שחור לעידכון
+		//black list. get the names of the files, one for the graph, the other for the black list
 		public void BL(String name_file_BL){
 			FileReader in;
 			String s = "",t="",m="";
@@ -238,8 +257,8 @@ public class Graph {
 					ArrayList<Double> beforUp = new ArrayList<Double>();
 					for(int j=0;j<nemberBL;j++){
 						t = st.nextToken();
-						int index = Integer.valueOf(t);//הקודקוד השחור
-						int size = list[index].size();//כמה קודקודים צלעות יש לקודקוד השחור
+						int index = Integer.valueOf(t);//������� �����
+						int size = list[index].size();//��� �������� ����� �� ������� �����
 
 						if(size>0){
 							for(int a =0;a<size;a++){
@@ -260,8 +279,8 @@ public class Graph {
 					stm.nextToken();
 					for(int j=0;j<nemberBL;j++){
 						t = stm.nextToken();
-						int index = Integer.valueOf(t);//הקודקוד השחור
-						int size = list[index].size();//כמה קודקודים צלעות יש לקודקוד השחור
+						int index = Integer.valueOf(t);//������� �����
+						int size = list[index].size();//��� �������� ����� �� ������� �����
 
 						if(size>0){
 							for(int a =0;a<size;a++){
@@ -286,7 +305,7 @@ public class Graph {
 			return distance[end];
 		}
 
-		//מחזיר את המסלול הקצר ביותר לנק הסיום
+		// return string of the shortest path
 		public String getPath(int st,int end){
 			findShortestPaths(st);
 			if(distance[end]==Double.POSITIVE_INFINITY)
@@ -313,8 +332,7 @@ public class Graph {
 			}
 			return s;
 		}
-
-		//אלגוריתם של דיקסטרה מציאת המסלול הקצר ביותר בגרף
+		// dijkstra, find the shortest path. fill the array "distance"
 		private void findShortestPaths(int start) {
 			this.distance = new double[nodes];
 
@@ -345,7 +363,7 @@ public class Graph {
 				}
 			}
 		}
-		//פונקציה שמיועדת לרשימה השחורה, אחרי עידכון עליית המחירים בצלעות המבוקשות נפעיל שוב את האלגוריתם עם שינויים קלים
+		// function of the black list, update the price of the edges
 		private void findShortestPaths2(int start) {
 
 			distance[start] = 0;
@@ -371,7 +389,7 @@ public class Graph {
 			}
 		}
 
-		//צלע בדרף לכל צלע יש משקל ויעד
+		// edge of the graph, to all the edge there is a a vertex and weight
 		static class Edge implements Comparable<Edge> {
 			int to;
 			double weight;
@@ -407,7 +425,7 @@ public class Graph {
 				return Double.compare(this.weight,a.weight );
 			}
 		}
-		//קודקוד בגרף
+		// vertex in the graph
 		static class Node implements Comparable<Node> {
 
 			int node;
